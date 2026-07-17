@@ -1232,7 +1232,13 @@ class UART extends Duplex {
 //   CPHA: 2
 // };
 //
-const prefix = '/sys/devices/leds/leds/tessel:';
+// Use the canonical LED class path (/sys/class/leds) rather than the
+// platform-device-relative path (/sys/devices/leds/leds). The latter only
+// existed on the original Chaos Calmer kernel where the gpio-leds platform
+// device was named "leds"; on modern kernels (e.g. OpenWrt 25.12 / k6.12) the
+// device is "gpio-leds", so that path no longer resolves and LED writes
+// silently no-op. /sys/class/leds/<name> is stable across all kernel versions.
+const prefix = '/sys/class/leds/tessel:';
 const suffix = '/brightness';
 
 function LEDs(defs) {
